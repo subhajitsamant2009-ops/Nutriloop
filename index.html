@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriFit — Nutrition & Exercise App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root{
+  --green:#1D9E75; --green-light:#E1F5EE; --green-dark:#085041;
+  --amber:#BA7517; --amber-light:#FAEEDA;
+  --red:#E24B4A;   --red-light:#FCEBEB;
+  --blue:#185FA5;  --blue-light:#E6F1FB;
+  --purple:#534AB7;--purple-light:#EEEDFE;
+  --coral:#993C1D; --coral-light:#FAECE7;
+  --pink:#993556;  --pink-light:#FBEAF0;
+  --bg:#F7F6F2; --surface:#FFFFFF; --surface2:#F0EEE9;
+  --border:#E2DDD6; --border2:#CCC8C0;
+  --text:#1C1C1A; --text2:#6B6860; --text3:#9E9B95;
+  --radius:10px; --radius-lg:14px; --radius-xl:18px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --font:'DM Sans',sans-serif; --font-display:'DM Serif Display',serif;
+  --nav-h:56px;
+}
+[data-theme="dark"]{
+  --bg:#131210; --surface:#1E1C19; --surface2:#27251F;
+  --border:#2E2C27; --border2:#3A3830;
+  --text:#F0EDE6; --text2:#9E9B95; --text3:#5A5850;
+  --green-light:#0A2F22; --amber-light:#2A1C05; --red-light:#2A0F0F;
+  --blue-light:#071828; --purple-light:#130F3A; --coral-light:#2A100A;
+  --pink-light:#2A0D18;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 4px 12px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;transition:background .3s,color .3s;}
+
+/* ─── LAYOUT ─────────────────────────────────────────────── */
+.app{max-width:780px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{height:var(--nav-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;transition:background .3s,border-color .3s;}
+.logo{font-family:var(--font-display);font-size:22px;letter-spacing:-.3px;}
+.logo em{color:var(--green);font-style:normal;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.icon-btn{width:34px;height:34px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s;}
+.icon-btn:hover{border-color:var(--border2);color:var(--text);}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:780px;background:var(--surface);border-top:1px solid var(--border);display:flex;transition:background .3s;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 14px;cursor:pointer;color:var(--text3);font-size:10px;font-weight:500;letter-spacing:.3px;text-transform:uppercase;transition:color .15s;border:none;background:none;font-family:var(--font);}
+.bnav-item i{font-size:20px;}
+.bnav-item.active{color:var(--green);}
+.content{flex:1;padding:1.25rem 1.25rem calc(var(--nav-h) + 1.5rem);}
+.page{display:none;animation:fadeIn .2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── COMPONENTS ─────────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.3rem;box-shadow:var(--shadow);transition:background .3s,border-color .3s;}
+.card+.card{margin-top:12px;}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+h2.page-title{font-family:var(--font-display);font-size:26px;margin-bottom:4px;}
+.subtitle{font-size:13px;color:var(--text2);margin-bottom:1.25rem;}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.pill.cardio{background:var(--blue-light);color:var(--blue);}
+.pill.strength{background:var(--purple-light);color:var(--purple);}
+.pill.flexibility{background:var(--green-light);color:var(--green-dark);}
+.pill.balance{background:var(--amber-light);color:var(--amber);}
+.pill.beginner{background:var(--green-light);color:var(--green-dark);}
+.pill.intermediate{background:var(--amber-light);color:var(--amber);}
+.pill.advanced{background:var(--coral-light);color:var(--coral);}
+.tip-box{background:var(--green-light);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--green-dark);display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+.tip-box i{flex-shrink:0;margin-top:2px;font-size:16px;}
+input[type=text],input[type=number],select{height:40px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:0 12px;font-size:14px;font-family:var(--font);color:var(--text);width:100%;transition:border-color .15s,background .3s;}
+input[type=text]:focus,input[type=number]:focus,select:focus{outline:none;border-color:var(--green);}
+button.btn{height:40px;padding:0 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);font-size:14px;font-family:var(--font);color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;}
+button.btn:hover{border-color:var(--border2);}
+button.btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+button.btn.primary:hover{background:#178a64;}
+button.btn.sm{height:32px;padding:0 12px;font-size:12px;}
+
+/* ─── NUTRITION PAGE ─────────────────────────────────────── */
+.search-row{display:flex;gap:8px;margin-bottom:14px;}
+.search-row input{flex:1;}
+.food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:1.25rem;}
+.food-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:13px;transition:all .15s;}
+.food-chip:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.food-chip.selected{border:2px solid var(--green);background:var(--green-light);}
+.food-icon{font-size:18px;flex-shrink:0;}
+.macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem;}
+.macro-box{background:var(--surface2);border-radius:var(--radius);padding:10px;text-align:center;transition:background .3s;}
+.macro-box .val{font-size:21px;font-weight:600;line-height:1.2;}
+.macro-box .lbl{font-size:11px;color:var(--text2);margin-top:2px;}
+.macro-box.cal .val{color:var(--green);}
+.macro-box.pro .val{color:var(--blue);}
+.macro-box.fat .val{color:var(--coral);}
+.macro-box.carb .val{color:var(--amber);}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.bar-lbl{font-size:12px;color:var(--text2);width:88px;flex-shrink:0;}
+.bar-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+.bar-val{font-size:12px;color:var(--text2);width:56px;text-align:right;flex-shrink:0;}
+.qty-row{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.qty-row label{font-size:13px;color:var(--text2);flex-shrink:0;}
+.qty-row input[type=range]{flex:1;accent-color:var(--green);}
+.qty-val{font-size:14px;font-weight:600;min-width:48px;color:var(--text);}
+.empty-state{text-align:center;padding:2rem;color:var(--text3);font-size:14px;}
+.empty-state i{font-size:40px;display:block;margin-bottom:10px;}
+
+/* ─── MEAL LOG ────────────────────────────────────────────── */
+.log-entry{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.log-entry:last-child{border-bottom:none;}
+.log-icon{font-size:24px;flex-shrink:0;}
+.log-info{flex:1;}
+.log-info .name{font-size:14px;font-weight:500;}
+.log-info .meta{font-size:12px;color:var(--text2);}
+.log-cal{font-size:14px;font-weight:600;color:var(--green);}
+.log-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px;}
+.log-del:hover{color:var(--red);}
+.daily-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.dsbox{background:var(--surface2);border-radius:var(--radius);padding:10px;text-align:center;transition:background .3s;}
+.dsbox .dv{font-size:18px;font-weight:600;}
+.dsbox .dl{font-size:11px;color:var(--text2);}
+.add-log-form{display:flex;gap:8px;margin-bottom:1rem;}
+.add-log-form input{flex:1;}
+.add-log-form input.qty{width:70px;flex:none;}
+
+/* ─── WATER TRACKER ──────────────────────────────────────── */
+.water-visual{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:1rem 0;}
+.water-cup{width:38px;height:50px;border:2px solid var(--blue);border-radius:0 0 8px 8px;border-top:none;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;}
+.water-cup.filled::after{content:'';position:absolute;bottom:0;left:0;right:0;top:0;background:var(--blue);opacity:.8;transition:all .3s;}
+.water-cup:hover{transform:scale(1.1);}
+.water-count{font-size:32px;font-weight:600;text-align:center;color:var(--blue);font-family:var(--font-display);}
+.water-label{text-align:center;font-size:13px;color:var(--text2);margin-bottom:1rem;}
+.water-btns{display:flex;gap:8px;justify-content:center;}
+
+/* ─── BMI PAGE ─────────────────────────────────────────────  */
+.bmi-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.bmi-form .field label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;}
+.bmi-result{text-align:center;padding:1.5rem;}
+.bmi-number{font-size:56px;font-weight:600;font-family:var(--font-display);line-height:1;}
+.bmi-category{font-size:16px;font-weight:500;margin-top:6px;}
+.bmi-bar-wrap{margin:1rem 0;position:relative;}
+.bmi-scale{height:12px;border-radius:6px;background:linear-gradient(to right,#378ADD 0%,#1D9E75 25%,#EF9F27 50%,#E24B4A 75%,#993C1D 100%);position:relative;}
+.bmi-pointer{position:absolute;top:-4px;width:4px;height:20px;background:var(--text);border-radius:2px;transform:translateX(-50%);transition:left .5s ease;}
+.bmi-scale-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:4px;}
+.bmi-advice{background:var(--surface2);border-radius:var(--radius);padding:12px 14px;font-size:13px;margin-top:1rem;line-height:1.7;}
+
+/* ─── EXERCISE PAGE ──────────────────────────────────────── */
+.profile-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:1.25rem;scrollbar-width:none;}
+.profile-scroll::-webkit-scrollbar{display:none;}
+.ptab{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;white-space:nowrap;color:var(--text2);transition:all .15s;font-family:var(--font);}
+.ptab.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:500;}
+.ex-section{display:none;}
+.ex-section.active{display:block;}
+.ex-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ex-icon-box{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ex-header h3{font-size:17px;font-weight:600;}
+.ex-header p{font-size:13px;color:var(--text2);}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:1.25rem;}
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;}
+.ex-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.ex-card h4{font-size:14px;font-weight:600;margin-bottom:4px;}
+.ex-card p{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:8px;}
+.ex-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.plan-section{margin-top:1.5rem;}
+.plan-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.plan-row:last-child{border-bottom:none;}
+.plan-day{font-size:12px;font-weight:600;color:var(--text2);width:26px;flex-shrink:0;}
+.plan-name{font-size:13px;font-weight:500;flex:1;}
+.plan-meta{font-size:12px;color:var(--text2);}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:500px){
+  .macro-grid{grid-template-columns:repeat(2,1fr);}
+  .bmi-form{grid-template-columns:1fr;}
+  .daily-summary{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <span class="logo">Nutri<em>Fit</em></span>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="toggleTheme()" title="Toggle dark mode"><i class="ti ti-moon-stars" id="theme-icon"></i></button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ── NUTRITION PAGE ────────────────────────────── -->
+    <div id="page-nutrition" class="page active">
+      <h2 class="page-title">Nutrition</h2>
+      <p class="subtitle">Search a food to see its full nutrient breakdown.</p>
+      <div class="search-row">
+        <input type="text" id="food-input" placeholder="Search food (banana, chicken, oats…)" oninput="filterFoods(this.value)">
+        <button class="btn primary" onclick="filterFoods(document.getElementById('food-input').value)"><i class="ti ti-search"></i></button>
+      </div>
+      <div class="section-label">Quick select</div>
+      <div class="food-grid" id="food-grid"></div>
+      <div id="no-results" style="display:none;" class="empty-state"><i class="ti ti-mood-empty"></i>No foods matched. Try another name.</div>
+
+      <div class="card" id="nutrient-panel" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:16px;font-weight:600;" id="panel-title">Food</span>
+          <button class="btn sm primary" onclick="logSelectedFood()"><i class="ti ti-plus"></i> Add to Log</button>
+        </div>
+        <div class="qty-row">
+          <label>Serving</label>
+          <input type="range" id="qty-slider" min="25" max="500" step="25" value="100" oninput="updateQty(this.value)">
+          <span class="qty-val" id="qty-display">100g</span>
+        </div>
+        <div class="macro-grid">
+          <div class="macro-box cal"><div class="val" id="m-cal">—</div><div class="lbl">kcal</div></div>
+          <div class="macro-box pro"><div class="val" id="m-pro">—</div><div class="lbl">Protein</div></div>
+          <div class="macro-box fat"><div class="val" id="m-fat">—</div><div class="lbl">Fat</div></div>
+          <div class="macro-box carb"><div class="val" id="m-carb">—</div><div class="lbl">Carbs</div></div>
+        </div>
+        <div class="section-label">Micronutrients</div>
+        <div id="micro-bars"></div>
+      </div>
+    </div>
+
+    <!-- ── MEAL LOG PAGE ─────────────────────────────── -->
+    <div id="page-log" class="page">
+      <h2 class="page-title">Meal Log</h2>
+      <p class="subtitle">Track everything you eat today.</p>
+      <div class="daily-summary">
+        <div class="dsbox"><div class="dv" id="log-total-cal" style="color:var(--green);">0</div><div class="dl">Calories</div></div>
+        <div class="dsbox"><div class="dv" id="log-total-pro" style="color:var(--blue);">0g</div><div class="dl">Protein</div></div>
+        <div class="dsbox"><div class="dv" id="log-total-carb" style="color:var(--amber);">0g</div><div class="dl">Carbs</div></div>
+      </div>
+      <div class="card">
+        <div class="section-label">Add custom food</div>
+        <div class="add-log-form">
+          <input type="text" id="log-name" placeholder="Food name">
+          <input type="number" id="log-cal-input" class="qty" placeholder="kcal" min="0">
+          <button class="btn primary" onclick="addCustomLog()"><i class="ti ti-plus"></i></button>
+        </div>
+        <div class="section-label" style="margin-top:4px;">Today's entries</div>
+        <div id="log-list"><div class="empty-state"><i class="ti ti-clipboard-list"></i>No entries yet. Search a food and tap "Add to Log".</div></div>
+      </div>
+    </div>
+
+    <!-- ── WATER PAGE ────────────────────────────────── -->
+    <div id="page-water" class="page">
+      <h2 class="page-title">Hydration</h2>
+      <p class="subtitle">Goal: 8 glasses (2 litres) per day.</p>
+      <div class="card" style="text-align:center;">
+        <div class="water-count" id="water-count">0</div>
+        <div class="water-label" id="water-label">glasses of water today</div>
+        <div class="water-visual" id="water-visual"></div>
+        <div class="water-btns">
+          <button class="btn" onclick="changeWater(-1)"><i class="ti ti-minus"></i> Remove</button>
+          <button class="btn primary" onclick="changeWater(1)"><i class="ti ti-droplet"></i> Add Glass</button>
+        </div>
+        <div id="water-msg" style="font-size:13px;color:var(--text2);margin-top:14px;"></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="section-label">Why hydration matters</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+          ✦ Regulates body temperature and joint lubrication<br>
+          ✦ Supports kidney function and toxin removal<br>
+          ✦ Boosts energy levels and brain performance<br>
+          ✦ Aids digestion and nutrient absorption<br>
+          ✦ Promotes clear, healthy skin
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BMI PAGE ──────────────────────────────────── -->
+    <div id="page-bmi" class="page">
+      <h2 class="page-title">BMI Calculator</h2>
+      <p class="subtitle">Body Mass Index — a general health indicator.</p>
+      <div class="card">
+        <div class="bmi-form">
+          <div class="field">
+            <label>Weight (kg)</label>
+            <input type="number" id="bmi-weight" placeholder="e.g. 70" min="20" max="300">
+          </div>
+          <div class="field">
+            <label>Height (cm)</label>
+            <input type="number" id="bmi-height" placeholder="e.g. 175" min="100" max="250">
+          </div>
+          <div class="field">
+            <label>Age</label>
+            <input type="number" id="bmi-age" placeholder="e.g. 28" min="5" max="100">
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <select id="bmi-gender"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+          </div>
+        </div>
+        <button class="btn primary" style="width:100%;" onclick="calcBMI()">Calculate BMI</button>
+        <div id="bmi-result" style="display:none;" class="bmi-result">
+          <div class="bmi-number" id="bmi-val">—</div>
+          <div class="bmi-category" id="bmi-cat">—</div>
+          <div class="bmi-bar-wrap">
+            <div class="bmi-scale"></div>
+            <div class="bmi-pointer" id="bmi-pointer" style="left:50%;"></div>
+            <div class="bmi-scale-labels"><span>16</span><span>18.5</span><span>25</span><span>30</span><span>40</span></div>
+          </div>
+          <div class="bmi-advice" id="bmi-advice"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EXERCISE PAGE ─────────────────────────────── -->
+    <div id="page-exercise" class="page">
+      <h2 class="page-title">Exercise Plans</h2>
+      <p class="subtitle">Tailored workouts for every stage of life.</p>
+      <div class="profile-scroll" id="person-tabs"></div>
+      <div id="exercise-sections"></div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bnav-item active" onclick="showPage('nutrition',this)"><i class="ti ti-leaf"></i>Nutrition</button>
+    <button class="bnav-item" onclick="showPage('log',this)"><i class="ti ti-clipboard-list"></i>Log</button>
+    <button class="bnav-item" onclick="showPage('water',this)"><i class="ti ti-droplet"></i>Water</button>
+    <button class="bnav-item" onclick="showPage('bmi',this)"><i class="ti ti-scale"></i>BMI</button>
+    <button class="bnav-item" onclick="showPage('exercise',this)"><i class="ti ti-run"></i>Exercise</button>
+  </nav>
+
+</div>
+
+<script>
+/* ─── DATA ─────────────────────────────────────────────────── */
+const FOODS=[
+  {id:"banana",label:"Banana",icon:"🍌",cal:89,pro:1.1,fat:0.3,carb:23,fiber:2.6,sugar:12,sodium:1,vit_c:8.7,potassium:358,iron:0.3,calcium:5},
+  {id:"egg",label:"Egg",icon:"🥚",cal:155,pro:13,fat:11,carb:1.1,fiber:0,sugar:1.1,sodium:124,vit_c:0,potassium:126,iron:1.8,calcium:50},
+  {id:"rice",label:"White Rice",icon:"🍚",cal:130,pro:2.7,fat:0.3,carb:28,fiber:0.4,sugar:0,sodium:1,vit_c:0,potassium:35,iron:0.2,calcium:10},
+  {id:"chicken",label:"Chicken Breast",icon:"🍗",cal:165,pro:31,fat:3.6,carb:0,fiber:0,sugar:0,sodium:74,vit_c:0,potassium:256,iron:1,calcium:15},
+  {id:"apple",label:"Apple",icon:"🍎",cal:52,pro:0.3,fat:0.2,carb:14,fiber:2.4,sugar:10,sodium:1,vit_c:4.6,potassium:107,iron:0.1,calcium:6},
+  {id:"milk",label:"Whole Milk",icon:"🥛",cal:61,pro:3.2,fat:3.3,carb:4.8,fiber:0,sugar:5.1,sodium:43,vit_c:0.2,potassium:132,iron:0.1,calcium:113},
+  {id:"bread",label:"Whole Wheat Bread",icon:"🍞",cal:247,pro:13,fat:3.4,carb:41,fiber:7,sugar:6,sodium:400,vit_c:0,potassium:250,iron:3.6,calcium:73},
+  {id:"spinach",label:"Spinach",icon:"🥬",cal:23,pro:2.9,fat:0.4,carb:3.6,fiber:2.2,sugar:0.4,sodium:79,vit_c:28.1,potassium:558,iron:2.7,calcium:99},
+  {id:"salmon",label:"Salmon",icon:"🐟",cal:208,pro:20,fat:13,carb:0,fiber:0,sugar:0,sodium:59,vit_c:3.9,potassium:363,iron:0.8,calcium:12},
+  {id:"oats",label:"Oats",icon:"🌾",cal:389,pro:17,fat:7,carb:66,fiber:10.6,sugar:1,sodium:2,vit_c:0,potassium:429,iron:4.7,calcium:54},
+  {id:"avocado",label:"Avocado",icon:"🥑",cal:160,pro:2,fat:15,carb:9,fiber:6.7,sugar:0.7,sodium:7,vit_c:10,potassium:485,iron:0.6,calcium:12},
+  {id:"lentils",label:"Lentils",icon:"🫘",cal:116,pro:9,fat:0.4,carb:20,fiber:7.9,sugar:1.8,sodium:2,vit_c:1.5,potassium:369,iron:3.3,calcium:19},
+  {id:"sweet_potato",label:"Sweet Potato",icon:"🍠",cal:86,pro:1.6,fat:0.1,carb:20,fiber:3,sugar:4.2,sodium:55,vit_c:2.4,potassium:337,iron:0.6,calcium:30},
+  {id:"yogurt",label:"Greek Yogurt",icon:"🥣",cal:59,pro:10,fat:0.4,carb:3.6,fiber:0,sugar:3.2,sodium:36,vit_c:0,potassium:141,iron:0.1,calcium:111},
+  {id:"broccoli",label:"Broccoli",icon:"🥦",cal:34,pro:2.8,fat:0.4,carb:7,fiber:2.6,sugar:1.7,sodium:33,vit_c:89.2,potassium:316,iron:0.7,calcium:47},
+  {id:"almonds",label:"Almonds",icon:"🌰",cal:579,pro:21,fat:50,carb:22,fiber:12.5,sugar:4.4,sodium:1,vit_c:0,potassium:733,iron:3.7,calcium:264},
+  {id:"tuna",label:"Tuna",icon:"🐠",cal:132,pro:28,fat:1.3,carb:0,fiber:0,sugar:0,sodium:45,vit_c:0,potassium:252,iron:1.3,calcium:8},
+  {id:"orange",label:"Orange",icon:"🍊",cal:47,pro:0.9,fat:0.1,carb:12,fiber:2.4,sugar:9.4,sodium:0,vit_c:53.2,potassium:181,iron:0.1,calcium:40},
+  {id:"paneer",label:"Paneer",icon:"🧀",cal:265,pro:18,fat:20,carb:3,fiber:0,sugar:2.5,sodium:320,vit_c:0,potassium:90,iron:0.3,calcium:480},
+  {id:"dal",label:"Lentil Dal",icon:"🍲",cal:93,pro:6.5,fat:0.3,carb:16,fiber:4,sugar:1,sodium:8,vit_c:1.5,potassium:310,iron:2.5,calcium:24},
+];
+const MICROS=[
+  {key:"fiber",label:"Fiber",unit:"g",max:30,color:"#1D9E75"},
+  {key:"sugar",label:"Sugar",unit:"g",max:50,color:"#EF9F27"},
+  {key:"sodium",label:"Sodium",unit:"mg",max:2300,color:"#E24B4A"},
+  {key:"vit_c",label:"Vitamin C",unit:"mg",max:90,color:"#378ADD"},
+  {key:"potassium",label:"Potassium",unit:"mg",max:4700,color:"#7F77DD"},
+  {key:"iron",label:"Iron",unit:"mg",max:18,color:"#D85A30"},
+  {key:"calcium",label:"Calcium",unit:"mg",max:1000,color:"#1D9E75"},
+];
+const PROFILES=[
+  {id:"beginner",label:"Beginner",icon:"🌱",color:"#1D9E75",bg:"#E1F5EE",textColor:"#085041",tip:"Start with 2–3 sessions per week. Focus on form before intensity. Rest days are essential."},
+  {id:"intermediate",label:"Intermediate",icon:"⚡",color:"#BA7517",bg:"#FAEEDA",textColor:"#854F0B",tip:"Train 3–5 days. Add progressive overload weekly. Mix cardio and strength training."},
+  {id:"advanced",label:"Advanced",icon:"🏆",color:"#993C1D",bg:"#FAECE7",textColor:"#993C1D",tip:"5–6 sessions. Periodize your training into phases. Prioritize sleep and recovery nutrition."},
+  {id:"senior",label:"Senior 60+",icon:"🧡",color:"#534AB7",bg:"#EEEDFE",textColor:"#534AB7",tip:"Low-impact movement daily. Balance and flexibility reduce fall risk. Listen to your body."},
+  {id:"child",label:"Kids 6–14",icon:"🎈",color:"#185FA5",bg:"#E6F1FB",textColor:"#185FA5",tip:"60 minutes of active play daily. Focus on fun, not performance. Avoid heavy weightlifting."},
+  {id:"pregnant",label:"Prenatal",icon:"🤱",color:"#993556",bg:"#FBEAF0",textColor:"#993556",tip:"Light-moderate exercise is safe for most. Avoid lying flat after 20 weeks. Stay hydrated."},
+];
+const EXERCISES={
+  beginner:[
+    {name:"Brisk Walking",desc:"20–30 min daily walk. Burns ~120 kcal. Improves heart health with zero equipment.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Bodyweight Squats",desc:"Stand feet shoulder-width, lower until thighs are parallel, rise back up. Strengthens quads and glutes.",cat:"strength",level:"beginner",sets:"3 × 12"},
+    {name:"Wall Push-ups",desc:"Place hands on wall, lean in and push. Great for chest and arms without floor pressure.",cat:"strength",level:"beginner",sets:"3 × 10"},
+    {name:"Seated Leg Raises",desc:"Sit upright, extend and raise each leg. Core activation with no floor requirement.",cat:"strength",level:"beginner",sets:"2 × 15"},
+    {name:"Full Body Stretch",desc:"10-minute head-to-toe stretch routine. Reduces soreness, improves posture.",cat:"flexibility",level:"beginner",sets:"10 min"},
+    {name:"Swimming",desc:"Easy freestyle laps. Full body, joint-friendly, and excellent cardio.",cat:"cardio",level:"beginner",sets:"20 min"},
+    {name:"Standing Balance",desc:"Stand on one leg 30 seconds each side. Core stability and fall prevention.",cat:"balance",level:"beginner",sets:"3 × 30s"},
+  ],
+  intermediate:[
+    {name:"Running / Jogging",desc:"Sustained run at conversational pace. Builds aerobic base and burns 300–400 kcal.",cat:"cardio",level:"intermediate",sets:"35 min"},
+    {name:"Dumbbell Lunges",desc:"Step forward, lower back knee, drive through front heel. Leg strength and balance.",cat:"strength",level:"intermediate",sets:"4 × 10"},
+    {name:"Standard Push-ups",desc:"Full range push-up engaging chest, shoulders, and triceps. Increase reps weekly.",cat:"strength",level:"intermediate",sets:"4 × 20"},
+    {name:"Plank Hold",desc:"Forearms on floor, body in a straight line. Builds deep core and stabilizer muscles.",cat:"strength",level:"intermediate",sets:"3 × 45s"},
+    {name:"Cycling",desc:"Moderate ride outdoors or on a stationary bike. Great for cardiovascular endurance.",cat:"cardio",level:"intermediate",sets:"45 min"},
+    {name:"Yoga Flow",desc:"Vinyasa-style movement linking breath to motion. Flexibility, balance, and recovery.",cat:"flexibility",level:"intermediate",sets:"30 min"},
+    {name:"Jump Rope",desc:"Fast-paced skipping. Improves coordination, calf strength, and burns 300 kcal/30 min.",cat:"cardio",level:"intermediate",sets:"20 min"},
+  ],
+  advanced:[
+    {name:"HIIT Sprints",desc:"8 rounds of 20 sec max effort sprint + 10 sec rest. Burns 400+ kcal in 20 minutes.",cat:"cardio",level:"advanced",sets:"8 rounds"},
+    {name:"Barbell Deadlift",desc:"Hip-hinge compound lift engaging posterior chain: hamstrings, glutes, back, and core.",cat:"strength",level:"advanced",sets:"4 × 6"},
+    {name:"Pull-ups",desc:"Full dead-hang to chin over bar. Develops back width, biceps, and grip strength.",cat:"strength",level:"advanced",sets:"4 × failure"},
+    {name:"Box Jumps",desc:"Explosive jump onto a stable platform. Develops lower body power and fast-twitch fibers.",cat:"strength",level:"advanced",sets:"3 × 8"},
+    {name:"Battle Ropes",desc:"Alternating or double waves with ropes. Full-body conditioning and metabolic blast.",cat:"cardio",level:"advanced",sets:"5 × 30s"},
+    {name:"Pistol Squat",desc:"Single-leg squat to full depth. Extreme balance, mobility, and leg strength challenge.",cat:"balance",level:"advanced",sets:"3 × 5"},
+    {name:"Barbell Bench Press",desc:"Classic horizontal push. Chest, anterior deltoid, and tricep hypertrophy and strength.",cat:"strength",level:"advanced",sets:"4 × 8"},
+  ],
+  senior:[
+    {name:"Chair Yoga",desc:"Gentle seated and standing poses. Improves mobility, reduces stiffness, promotes calm.",cat:"flexibility",level:"beginner",sets:"20 min"},
+    {name:"Daily Walking",desc:"30 min at comfortable pace. Maintains cardiovascular health, mood, and bone density.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Resistance Band Rows",desc:"Seated band rows. Safe upper-body strength with no joint stress or balance risk.",cat:"strength",level:"beginner",sets:"2 × 12"},
+    {name:"Single-leg Stand",desc:"Hold for 30 seconds each side. Prevents falls and maintains proprioception.",cat:"balance",level:"beginner",sets:"3 × 30s"},
+    {name:"Tai Chi",desc:"Slow, flowing movement sequence. Improves balance, reduces stress, boosts coordination.",cat:"balance",level:"beginner",sets:"20 min"},
+    {name:"Water Aerobics",desc:"Low-impact pool exercises. Excellent for joints, burns calories, builds strength.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Seated Marching",desc:"Lift knees alternately while seated. Safe cardio and hip flexor activation.",cat:"cardio",level:"beginner",sets:"3 × 1 min"},
+  ],
+  child:[
+    {name:"Jump Rope",desc:"Classic playground activity. Improves coordination, cardiovascular fitness, and timing.",cat:"cardio",level:"beginner",sets:"15 min"},
+    {name:"Obstacle Course",desc:"DIY backyard course with crawling, jumping, and balance. Agility and team fun.",cat:"balance",level:"beginner",sets:"20 min"},
+    {name:"Swimming",desc:"Structured lessons build life skills and full-body fitness. Low injury risk.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Gymnastics / Tumbling",desc:"Forward rolls, cartwheels, handstands. Body awareness and flexibility fundamentals.",cat:"flexibility",level:"beginner",sets:"30 min"},
+    {name:"Bike Riding",desc:"Outdoor cycling for leg strength, coordination, and cardiovascular health.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Dance / Zumba Kids",desc:"Music-led movement class. Cardio disguised as a party — engagement is key.",cat:"cardio",level:"beginner",sets:"25 min"},
+    {name:"Animal Walks",desc:"Bear crawls, crab walks, frog jumps. Full body strength and coordination for young kids.",cat:"strength",level:"beginner",sets:"10 min"},
+  ],
+  pregnant:[
+    {name:"Prenatal Walking",desc:"20–30 min easy pace. Safe, mood-boosting, and gentle on joints throughout pregnancy.",cat:"cardio",level:"beginner",sets:"30 min"},
+    {name:"Prenatal Yoga",desc:"Modified poses with props. Relaxation, flexibility, breath-work, and pelvic floor prep.",cat:"flexibility",level:"beginner",sets:"30 min"},
+    {name:"Kegel Exercises",desc:"Pelvic floor contractions: hold 5 sec, release. Essential for delivery and postpartum recovery.",cat:"strength",level:"beginner",sets:"3 × 10"},
+    {name:"Seated Stretches",desc:"Full-body flexibility routine seated or with support. Relieves back pain and tension.",cat:"flexibility",level:"beginner",sets:"15 min"},
+    {name:"Low-Impact Swimming",desc:"Pool buoyancy relieves joint pressure. Safe, full-body, and refreshing throughout all trimesters.",cat:"cardio",level:"beginner",sets:"20 min"},
+    {name:"Modified Squats",desc:"Wider stance squat using a wall or chair for support. Strengthens pelvis and glutes safely.",cat:"strength",level:"beginner",sets:"2 × 10"},
+    {name:"Cat-Cow Stretch",desc:"Gentle spinal flexion and extension on hands and knees. Relieves lower back pressure.",cat:"flexibility",level:"beginner",sets:"2 min"},
+  ],
+};
+const WEEKLY_PLANS={
+  beginner:["Rest / Light Walk","Squats + Wall Push-ups","Brisk Walking 30 min","Full Body Stretch","Squats + Leg Raises","Swimming","Rest"],
+  intermediate:["Running 35 min","Push-ups + Lunges","Cycling 45 min","Plank + Yoga Flow","Running 30 min","Jump Rope + Stretch","Rest"],
+  advanced:["Deadlift + Pull-ups","HIIT Sprints","Bench Press + Box Jumps","Rest / Mobility Work","Battle Ropes + Pistol Squats","Full Body Strength","Active Recovery"],
+  senior:["Chair Yoga","Walking 30 min","Resistance Bands","Tai Chi","Walking + Balance","Water Aerobics","Rest"],
+  child:["Bike Riding","Swimming","Jump Rope + Dance","Animal Walks","Obstacle Course","Gymnastics","Free Play"],
+  pregnant:["Prenatal Walk","Prenatal Yoga","Kegels + Seated Stretch","Swimming","Cat-Cow + Squats","Walk + Yoga","Rest / Light Stretch"],
+};
+
+/* ─── STATE ─────────────────────────────────────────────────── */
+let selectedFood=null,qty=100,filteredFoods=[...FOODS];
+let mealLog=[];
+let waterCount=0;
+
+/* ─── NAV ───────────────────────────────────────────────────── */
+function showPage(id,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  document.querySelectorAll(".bnav-item").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+/* ─── DARK MODE ─────────────────────────────────────────────── */
+let dark=false;
+function toggleTheme(){
+  dark=!dark;
+  document.documentElement.setAttribute("data-theme",dark?"dark":"");
+  document.getElementById("theme-icon").className=dark?"ti ti-sun":"ti ti-moon-stars";
+}
+
+/* ─── NUTRITION ─────────────────────────────────────────────── */
+function renderFoodGrid(){
+  const g=document.getElementById("food-grid");
+  g.innerHTML=filteredFoods.map(f=>`
+    <div class="food-chip${selectedFood&&selectedFood.id===f.id?" selected":""}" onclick="selectFood('${f.id}')">
+      <span class="food-icon">${f.icon}</span><span>${f.label}</span>
+    </div>`).join("");
+  document.getElementById("no-results").style.display=filteredFoods.length===0?"block":"none";
+}
+function filterFoods(q){
+  const s=q.trim().toLowerCase();
+  filteredFoods=s?FOODS.filter(f=>f.label.toLowerCase().includes(s)):FOODS;
+  renderFoodGrid();
+}
+function selectFood(id){
+  selectedFood=FOODS.find(f=>f.id===id);
+  qty=100;
+  document.getElementById("qty-slider").value=100;
+  document.getElementById("qty-display").textContent="100g";
+  renderFoodGrid();
+  renderNutrientPanel();
+  document.getElementById("nutrient-panel").style.display="block";
+}
+function updateQty(v){
+  qty=parseInt(v);
+  document.getElementById("qty-display").textContent=qty+"g";
+  renderNutrientPanel();
+}
+function renderNutrientPanel(){
+  if(!selectedFood)return;
+  const r=qty/100;
+  document.getElementById("panel-title").textContent=selectedFood.label+" ("+qty+"g)";
+  document.getElementById("m-cal").textContent=Math.round(selectedFood.cal*r);
+  document.getElementById("m-pro").textContent=(selectedFood.pro*r).toFixed(1)+"g";
+  document.getElementById("m-fat").textContent=(selectedFood.fat*r).toFixed(1)+"g";
+  document.getElementById("m-carb").textContent=(selectedFood.carb*r).toFixed(1)+"g";
+  document.getElementById("micro-bars").innerHTML=MICROS.map(m=>{
+    const val=selectedFood[m.key]*r;
+    const pct=Math.min(100,(val/m.max)*100);
+    const disp=m.unit==="mg"?Math.round(val).toLocaleString():val.toFixed(1);
+    return `<div class="bar-row">
+      <span class="bar-lbl">${m.label}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${m.color};"></div></div>
+      <span class="bar-val">${disp}${m.unit}</span>
+    </div>`;
+  }).join("");
+}
+
+/* ─── MEAL LOG ──────────────────────────────────────────────── */
+function logSelectedFood(){
+  if(!selectedFood)return;
+  const r=qty/100;
+  mealLog.push({name:selectedFood.label,icon:selectedFood.icon,qty,cal:Math.round(selectedFood.cal*r),pro:+(selectedFood.pro*r).toFixed(1),carb:+(selectedFood.carb*r).toFixed(1)});
+  renderLog();
+  alert(selectedFood.label+" added to your meal log!");
+}
+function addCustomLog(){
+  const name=document.getElementById("log-name").value.trim();
+  const cal=parseInt(document.getElementById("log-cal-input").value)||0;
+  if(!name)return;
+  mealLog.push({name,icon:"🍽️",qty:"—",cal,pro:0,carb:0});
+  document.getElementById("log-name").value="";
+  document.getElementById("log-cal-input").value="";
+  renderLog();
+}
+function deleteLog(i){mealLog.splice(i,1);renderLog();}
+function renderLog(){
+  const totalCal=mealLog.reduce((a,e)=>a+e.cal,0);
+  const totalPro=mealLog.reduce((a,e)=>a+e.pro,0);
+  const totalCarb=mealLog.reduce((a,e)=>a+e.carb,0);
+  document.getElementById("log-total-cal").textContent=totalCal;
+  document.getElementById("log-total-pro").textContent=totalPro.toFixed(1)+"g";
+  document.getElementById("log-total-carb").textContent=totalCarb.toFixed(1)+"g";
+  const list=document.getElementById("log-list");
+  if(mealLog.length===0){list.innerHTML='<div class="empty-state"><i class="ti ti-clipboard-list"></i>No entries yet.</div>';return;}
+  list.innerHTML=mealLog.map((e,i)=>`
+    <div class="log-entry">
+      <span class="log-icon">${e.icon}</span>
+      <div class="log-info"><div class="name">${e.name}</div><div class="meta">${e.qty !== "—" ? e.qty+"g" : ""} · ${e.pro}g protein · ${e.carb}g carbs</div></div>
+      <span class="log-cal">${e.cal} kcal</span>
+      <button class="log-del" onclick="deleteLog(${i})"><i class="ti ti-trash"></i></button>
+    </div>`).join("");
+}
+
+/* ─── WATER ─────────────────────────────────────────────────── */
+const WATER_MSGS=["Stay hydrated!","Great start! Keep going.","Halfway there! 👍","Almost at your goal!","Goal reached! 🎉 Well done!","Outstanding hydration! 💧"];
+function renderWater(){
+  document.getElementById("water-count").textContent=waterCount;
+  document.getElementById("water-label").textContent=`glass${waterCount!==1?"es":""} of water today`;
+  const vis=document.getElementById("water-visual");
+  vis.innerHTML=Array.from({length:8},(_,i)=>`<div class="water-cup${i<waterCount?" filled":""}" onclick="changeWater(${i<waterCount?-1:1})"></div>`).join("");
+  const mi=Math.min(Math.floor(waterCount/2),WATER_MSGS.length-1);
+  document.getElementById("water-msg").textContent=waterCount>0?WATER_MSGS[mi]:"";
+}
+function changeWater(d){waterCount=Math.max(0,Math.min(8,waterCount+d));renderWater();}
+
+/* ─── BMI ───────────────────────────────────────────────────── */
+function calcBMI(){
+  const w=parseFloat(document.getElementById("bmi-weight").value);
+  const h=parseFloat(document.getElementById("bmi-height").value)/100;
+  if(!w||!h||h<=0){alert("Please enter valid weight and height.");return;}
+  const bmi=w/(h*h);
+  const bmiRounded=bmi.toFixed(1);
+  let cat,advice,catColor;
+  if(bmi<16){cat="Severely Underweight";advice="Your BMI indicates you may be severely underweight. Please consult a doctor or dietitian for personalised guidance.";catColor="var(--blue)";}
+  else if(bmi<18.5){cat="Underweight";advice="You are slightly underweight. Consider increasing your caloric intake with nutrient-dense foods like nuts, avocado, dairy, and whole grains.";catColor="var(--blue)";}
+  else if(bmi<25){cat="Healthy Weight ✓";advice="Your BMI falls within the healthy range. Maintain this with regular exercise, a balanced diet, and good hydration.";catColor="var(--green)";}
+  else if(bmi<30){cat="Overweight";advice="Your BMI is slightly elevated. A moderate caloric deficit through reduced processed foods and increased physical activity can help.";catColor="var(--amber)";}
+  else if(bmi<35){cat="Obese (Class I)";advice="Your BMI suggests obesity. Regular exercise and a whole-food diet are recommended. Please consider speaking with a healthcare professional.";catColor="var(--red)";}
+  else{cat="Obese (Class II+)";advice="Your BMI is in a higher risk range. We strongly recommend consulting a doctor or registered dietitian for a personalised health plan.";catColor="var(--coral)";}
+  document.getElementById("bmi-val").textContent=bmiRounded;
+  document.getElementById("bmi-cat").textContent=cat;
+  document.getElementById("bmi-cat").style.color=catColor;
+  document.getElementById("bmi-advice").textContent=advice;
+  const pct=Math.min(100,Math.max(0,((bmi-16)/(40-16))*100));
+  document.getElementById("bmi-pointer").style.left=pct.toFixed(1)+"%";
+  document.getElementById("bmi-result").style.display="block";
+}
+
+/* ─── EXERCISE ──────────────────────────────────────────────── */
+function renderExercise(){
+  document.getElementById("person-tabs").innerHTML=PROFILES.map((p,i)=>`
+    <button class="ptab${i===0?" active":""}" onclick="switchProfile('${p.id}',this)">${p.icon} ${p.label}</button>`).join("");
+  document.getElementById("exercise-sections").innerHTML=PROFILES.map((p,i)=>{
+    const exs=EXERCISES[p.id]||[];
+    const plan=WEEKLY_PLANS[p.id]||[];
+    const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    return`<div id="ex-${p.id}" class="ex-section${i===0?" active":""}">
+      <div class="ex-header">
+        <div class="ex-icon-box" style="background:${p.bg};">${p.icon}</div>
+        <div><h3>${p.label} Plan</h3><p>Personalised program for your profile</p></div>
+      </div>
+      <div class="tip-box"><i class="ti ti-bulb"></i><span>${p.tip}</span></div>
+      <div class="section-label">Recommended exercises</div>
+      <div class="ex-grid">${exs.map(e=>`
+        <div class="ex-card">
+          <h4>${e.name}</h4>
+          <p>${e.desc}</p>
+          <div class="ex-pills">
+            <span class="pill ${e.cat}">${e.cat}</span>
+            <span class="pill ${e.level}">${e.level}</span>
+            <span style="font-size:11px;color:var(--text2);padding:3px 0;display:inline-block;">${e.sets}</span>
+          </div>
+        </div>`).join("")}
+      </div>
+      <div class="plan-section card">
+        <div class="section-label">7-day weekly plan</div>
+        ${days.map((d,i)=>`<div class="plan-row"><span class="plan-day">${d}</span><span class="plan-name">${plan[i]||"Rest"}</span></div>`).join("")}
+      </div>
+    </div>`;
+  }).join("");
+}
+function switchProfile(id,el){
+  document.querySelectorAll(".ptab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  document.querySelectorAll(".ex-section").forEach(s=>s.classList.remove("active"));
+  document.getElementById("ex-"+id).classList.add("active");
+}
+
+/* ─── INIT ──────────────────────────────────────────────────── */
+renderFoodGrid();
+renderLog();
+renderWater();
+renderExercise();
+</script>
+</body>
+</html>

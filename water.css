@@ -1,0 +1,57 @@
+/* ─── WATER TRACKER PAGE ─────────────────────────────────────── */
+.water-count {
+  font-size: 56px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--blue);
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.water-label {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 4px 0 1rem;
+}
+
+.water-visual {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.water-cup {
+  width: 38px;
+  height: 50px;
+  border: 2px solid var(--blue);
+  border-radius: 0 0 8px 8px;
+  border-top: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all .2s;
+}
+.water-cup.filled::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; top: 0;
+  background: var(--blue);
+  opacity: .8;
+  transition: all .3s;
+}
+.water-cup:hover { transform: scale(1.1); }
+
+.water-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.hydration-tips {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 2;
+}

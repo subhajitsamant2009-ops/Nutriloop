@@ -1,0 +1,50 @@
+/* ─── MEAL LOG PAGE ──────────────────────────────────────────── */
+.daily-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.dsbox {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 10px;
+  text-align: center;
+  transition: background .3s;
+}
+.dsbox .dv { font-size: 18px; font-weight: 600; }
+.dsbox .dl { font-size: 11px; color: var(--text2); }
+
+.add-log-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+.add-log-form input { flex: 1; }
+.add-log-form input.qty { width: 70px; flex: none; }
+
+.log-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.log-entry:last-child { border-bottom: none; }
+
+.log-icon  { font-size: 24px; flex-shrink: 0; }
+.log-info  { flex: 1; }
+.log-info .name { font-size: 14px; font-weight: 500; }
+.log-info .meta { font-size: 12px; color: var(--text2); }
+.log-cal   { font-size: 14px; font-weight: 600; color: var(--green); }
+
+.log-del {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 16px;
+  padding: 4px;
+  transition: color .15s;
+}
+.log-del:hover { color: var(--red); }

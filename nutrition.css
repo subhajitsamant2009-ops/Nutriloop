@@ -1,0 +1,103 @@
+/* ─── NUTRITION PAGE ─────────────────────────────────────────── */
+.search-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.search-row input { flex: 1; }
+
+/* Food grid */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.food-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 9px 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  transition: all .15s;
+}
+.food-chip:hover {
+  border-color: var(--green);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.food-chip.selected {
+  border: 2px solid var(--green);
+  background: var(--green-light);
+}
+.food-icon { font-size: 18px; flex-shrink: 0; }
+
+/* Serving slider */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.qty-row label { font-size: 13px; color: var(--text2); flex-shrink: 0; }
+.qty-row input[type=range] { flex: 1; accent-color: var(--green); }
+.qty-val { font-size: 14px; font-weight: 600; min-width: 48px; color: var(--text); }
+
+/* Macro boxes */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+.macro-box {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 10px;
+  text-align: center;
+  transition: background .3s;
+}
+.macro-box .val { font-size: 21px; font-weight: 600; line-height: 1.2; }
+.macro-box .lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.macro-box.cal  .val { color: var(--green); }
+.macro-box.pro  .val { color: var(--blue); }
+.macro-box.fat  .val { color: var(--coral); }
+.macro-box.carb .val { color: var(--amber); }
+
+/* Micronutrient bars */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+.bar-lbl {
+  font-size: 12px;
+  color: var(--text2);
+  width: 88px;
+  flex-shrink: 0;
+}
+.bar-track {
+  flex: 1;
+  height: 7px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+.bar-val {
+  font-size: 12px;
+  color: var(--text2);
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}

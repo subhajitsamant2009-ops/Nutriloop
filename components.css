@@ -1,0 +1,126 @@
+/* ─── SHARED COMPONENTS ─────────────────────────────────────── */
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.3rem;
+  box-shadow: var(--shadow);
+  transition: background .3s, border-color .3s;
+}
+.card + .card { margin-top: 12px; }
+
+/* Labels */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+button.btn {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+button.btn:hover  { border-color: var(--border2); }
+button.btn.primary { background: var(--green); color: #fff; border-color: var(--green); }
+button.btn.primary:hover { background: #178a64; }
+button.btn.sm { height: 32px; padding: 0 12px; font-size: 12px; }
+
+/* Icon button */
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text2);
+  transition: all .15s;
+}
+.icon-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* Inputs */
+input[type=text],
+input[type=number],
+select {
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text);
+  width: 100%;
+  transition: border-color .15s, background .3s;
+}
+input[type=text]:focus,
+input[type=number]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+/* Pills / badges */
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.pill.cardio      { background: var(--blue-light);   color: var(--blue); }
+.pill.strength    { background: var(--purple-light); color: var(--purple); }
+.pill.flexibility { background: var(--green-light);  color: var(--green-dark); }
+.pill.balance     { background: var(--amber-light);  color: var(--amber); }
+.pill.beginner    { background: var(--green-light);  color: var(--green-dark); }
+.pill.intermediate{ background: var(--amber-light);  color: var(--amber); }
+.pill.advanced    { background: var(--coral-light);  color: var(--coral); }
+
+/* Tip box */
+.tip-box {
+  background: var(--green-light);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--green-dark);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.tip-box i { flex-shrink: 0; margin-top: 2px; font-size: 16px; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text3);
+  font-size: 14px;
+}
+.empty-state i {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 10px;
+}

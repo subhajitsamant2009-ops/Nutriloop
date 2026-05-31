@@ -1,0 +1,79 @@
+/* ─── BMI CALCULATOR PAGE ────────────────────────────────────── */
+.bmi-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.bmi-form .field label {
+  font-size: 12px;
+  color: var(--text2);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.bmi-result {
+  text-align: center;
+  padding: 1.5rem 0 0;
+}
+
+.bmi-number {
+  font-size: 56px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.bmi-category {
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.bmi-bar-wrap {
+  margin: 1rem 0;
+  position: relative;
+}
+
+.bmi-scale {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(
+    to right,
+    #378ADD 0%,
+    #1D9E75 25%,
+    #EF9F27 50%,
+    #E24B4A 75%,
+    #993C1D 100%
+  );
+  position: relative;
+}
+
+.bmi-pointer {
+  position: absolute;
+  top: -4px;
+  width: 4px;
+  height: 20px;
+  background: var(--text);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: left .5s ease;
+}
+
+.bmi-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+.bmi-advice {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13px;
+  margin-top: 1rem;
+  line-height: 1.7;
+  text-align: left;
+}
